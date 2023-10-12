@@ -1,0 +1,28 @@
+---
+- name: Setup production
+  become: yes
+  become_user: root
+  command: shoper setup production {{ shprho_user }} --yes
+  args:
+    chdir: '{{ shoper_path }}'
+
+- name: Setup Sudoers
+  become: yes
+  become_user: root
+  command: shoper setup sudoers {{ shprho_user }}
+  args:
+    chdir: '{{ shoper_path }}'
+
+- name: Set correct permissions on shoper.log
+  file:
+    path: '{{ shoper_path }}/logs/shoper.log'
+    owner: '{{ shprho_user }}'
+    group: '{{ shprho_user }}'
+  become: yes
+  become_user: root
+
+- name: Restart the shoper
+  command: shoper restart
+  args:
+    chdir: '{{ shoper_path }}'
+...

@@ -1,0 +1,6 @@
+[Unit]
+After=network.target
+Wants={{ shoper_name }}-redis-cache.service {{ shoper_name }}-redis-queue.service
+
+[Install]
+WantedBy=multi-user.target

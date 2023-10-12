@@ -1,0 +1,12 @@
+[Unit]
+Description="{{ shoper_name }}-shprho-schedule"
+PartOf={{ shoper_name }}-workers.target
+
+[Service]
+User={{ user }}
+Group={{ user }}
+Restart=always
+ExecStart={{ shoper_cmd }} schedule
+StandardOutput=file:{{ shoper_dir }}/logs/schedule.log
+StandardError=file:{{ shoper_dir }}/logs/schedule.error.log
+WorkingDirectory={{ shoper_dir }}

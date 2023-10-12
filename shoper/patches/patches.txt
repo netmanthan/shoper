@@ -1,0 +1,10 @@
+shoper.patches.v3.deprecate_old_config
+shoper.patches.v3.celery_to_rq
+shoper.patches.v3.redis_bind_ip
+shoper.patches.v4.update_node
+shoper.patches.v4.update_socketio
+shoper.patches.v4.install_yarn #2
+shoper.patches.v5.fix_user_permissions
+shoper.patches.v5.fix_backup_cronjob
+shoper.patches.v5.set_live_reload_config
+shoper.patches.v5.update_archived_sites

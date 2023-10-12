@@ -1,0 +1,82 @@
+---
+  - name: Check if /tmp/.shoper exists
+    stat:
+      path: /tmp/.shoper
+    register: tmp_shoper
+
+  - name: Check if shoper_repo_path exists
+    stat:
+      path: '{{ shoper_repo_path }}'
+    register: shoper_repo_register
+
+  - name: move /tmp/.shoper if it exists
+    command: 'cp -R /tmp/.shoper {{ shoper_repo_path }}'
+    when: tmp_shoper.stat.exists and not shoper_repo_register.stat.exists
+
+  - name: install shoper
+    pip:
+      name: '{{ shoper_repo_path }}'
+      extra_args: '-e'
+    become: yes
+    become_user: root
+
+  - name: Overwrite shoper if required
+    file:
+      state: absent
+      path: "{{ shoper_path }}"
+    when: overwrite
+
+  - name: Check whether shoper exists
+    stat:
+      path: "{{ shoper_path }}"
+    register: shoper_stat
+
+  - name: Fix permissions
+    become_user: root
+    command: chown {{ shprho_user }} -R {{ user_directory }}
+
+  - name:  python3 shoper init for develop
+    command: shoper init {{ shoper_path }} --shprho-path {{ shprho_repo_url }} --shprho-branch {{ shprho_branch }} --python {{ python }}
+    args:
+      creates: "{{ shoper_path }}"
+    when: not shoper_stat.stat.exists and not production
+
+  - name: python3 shoper init for production
+    command: shoper init {{ shoper_path }} --shprho-path {{ shprho_repo_url }} --shprho-branch {{ shprho_branch }} --python {{ python }}
+    args:
+      creates: "{{ shoper_path }}"
+    when: not shoper_stat.stat.exists and production
+
+  # setup common_site_config
+  - name: setup config
+    command: shoper setup config
+    args:
+      creates: "{{ shoper_path }}/sites/common_site_config.json"
+      chdir: "{{ shoper_path }}"
+
+  - include_tasks: setup_inputrc.yml
+
+  # Setup Procfile
+  - name: Setup Procfile
+    command: shoper setup procfile
+    args:
+      creates: "{{ shoper_path }}/Procfile"
+      chdir: "{{ shoper_path }}"
+
+  # Setup Redis env for RQ
+  - name: Setup Redis
+    command: shoper setup redis
+    args:
+      creates: "{{ shoper_path }}/config/redis_socketio.conf"
+      chdir: "{{ shoper_path }}"
+
+  # Setup an ShoperHO site
+  - include_tasks: setup_shoperho.yml
+    when: not run_travis
+
+  # Setup Shoper for production environment
+  - include_tasks: setup_shoper_production.yml
+    vars:
+      shoper_path: "{{ user_directory }}/{{ shoper_name }}"
+    when: not run_travis and production
+...

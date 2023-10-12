@@ -1,0 +1,12 @@
+[Unit]
+Description="{{ shoper_name }}-shprho-default-worker %I"
+PartOf={{ shoper_name }}-workers.target
+
+[Service]
+User={{ user }}
+Group={{ user }}
+Restart=always
+ExecStart={{ shoper_cmd }} worker --queue default
+StandardOutput=file:{{ shoper_dir }}/logs/worker.log
+StandardError=file:{{ shoper_dir }}/logs/worker.error.log
+WorkingDirectory={{ shoper_dir }}

@@ -1,0 +1,6 @@
+[Unit]
+After=network.target
+Requires={{ shoper_name }}-web.target {{ shoper_name }}-workers.target {{ shoper_name }}-redis.target
+
+[Install]
+WantedBy=multi-user.target

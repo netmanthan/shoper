@@ -1,0 +1,13 @@
+[Unit]
+After={{ shoper_name }}-shprho-web.service
+Description="{{ shoper_name }}-node-socketio"
+PartOf={{ shoper_name }}-web.target
+
+[Service]
+User={{ user }}
+Group={{ user }}
+Restart=always
+ExecStart={{ node }} {{ shoper_dir }}/apps/shprho/socketio.js
+StandardOutput=file:{{ shoper_dir }}/logs/node-socketio.log
+StandardError=file:{{ shoper_dir }}/logs/node-socketio.error.log
+WorkingDirectory={{ shoper_dir }}

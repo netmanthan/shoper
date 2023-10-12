@@ -1,0 +1,29 @@
+---
+
+  - hosts: localhost
+    become: yes
+    become_user: root
+    tasks:
+    - name: Create user
+      user:
+        name: '{{ shprho_user }}'
+        generate_ssh_key: yes
+
+    - name: Set home folder perms
+      file:
+        path: '{{ user_directory }}'
+        mode: 'o+rx'
+        owner: '{{ shprho_user }}'
+        group: '{{ shprho_user }}'
+        recurse: yes
+
+    - name: Set /tmp/.shoper folder perms
+      file:
+        path: '{{ repo_path }}'
+        owner: '{{ shprho_user }}'
+        group: '{{ shprho_user }}'
+        recurse: yes
+
+    - name: Change default shell to bash
+      shell: "chsh {{ shprho_user }} -s $(which bash)"
+...

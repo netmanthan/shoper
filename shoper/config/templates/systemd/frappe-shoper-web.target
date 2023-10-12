@@ -1,0 +1,6 @@
+[Unit]
+After=network.target
+Wants={{ shoper_name }}-shprho-web.service {{ shoper_name }}-node-socketio.service
+
+[Install]
+WantedBy=multi-user.target
