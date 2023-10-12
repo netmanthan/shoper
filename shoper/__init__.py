@@ -1,4 +1,4 @@
-VERSION = "5.17.2"
+VERSION = "1.17.2"
 PROJECT_NAME = "shprho-shoper"
 shprho_VERSION = None
 current_path = None
